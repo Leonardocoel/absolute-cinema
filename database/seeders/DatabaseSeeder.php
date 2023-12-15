@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Models\User;
+use App\Models\UserAccount;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
             ['role_name' => 'end_user', 'created_at' => $now, 'updated_at' => $now],
         ]);
 
-        $rootAdmin = User::factory()->create([
+        $rootAdmin = User::factory()->has(UserAccount::factory())->create([
             'email' => 'root_admin@mail.com',
         ]);
 
@@ -37,5 +38,6 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $now,
         ]);
 
+        User::factory()->count(10)->has(UserAccount::factory())->create();
     }
 }
