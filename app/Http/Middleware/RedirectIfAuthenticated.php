@@ -21,7 +21,20 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $role = $request->user()->roles[0]->role_name;
+                switch ($role) {
+                    case 'root_admin':
+                        return redirect('/admin/dashboard');
+                        break;
+                    case 'cinema_admin':
+                        return redirect('/cinema/dashboard');
+                        break;
+                    case 'end_user':
+                        return redirect('/dashboard');
+                        break;
+                    default:
+                        return  abort(403, 'Unauthorized action.');
+                }
             }
         }
 

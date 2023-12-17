@@ -2,7 +2,11 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\RootAdmin\UserController;
+use App\Http\Controllers\RootAdmin\MovieController;
+use App\Http\Controllers\RootAdmin\CinemaController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +19,24 @@ use App\Http\Controllers\UserController;
 |
 */
 
+Route::get('/', fn () => redirect('login'));
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/', fn() => redirect('dashboard'));
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
-    Route::resource('/usuarios', UserController::class);
-});
+Route::prefix('admin')
+    ->middleware(['auth', 'role:root_admin'])
+    ->namespace('App\Http\Controllers\RootAdmin')
+    ->group(function () {
+        Route::get('/dashboard', fn () => Inertia::render('RootAdmin/Dashboard'))->name('dashboard');
+
+        Route::resource('/usuarios', UserController::class);
+
+        Route::patch('/cinemas/{cinema}/admin', [CinemaController::class, 'alterAdmin']);
+        Route::post('/cinemas/{cinema}/novos-usuarios', [CinemaController::class, 'addNewUsers']);
+        Route::resource('/cinemas', CinemaController::class);
+
+        Route::resource('/filmes', MovieController::class);
+    });
+
+
+
 
 require __DIR__ . '/auth.php';
