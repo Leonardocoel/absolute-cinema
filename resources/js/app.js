@@ -6,9 +6,17 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 
-import AdminLayout from "./Layouts/AdminLayout.vue";
+import RootAdminLayout from "./Layouts/RootAdminLayout.vue";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+
+function getLayout(name) {
+    if (name.startsWith("RootAdmin/")) return RootAdminLayout;
+    if (name.startsWith("CinemaAdmin/")) return CinemaAdminLayout;
+    if (name.startsWith("EndUser/")) return EndUserLayout;
+
+    return undefined;
+}
 
 createInertiaApp({
     title: (title) => `${appName} - ${title}`,
@@ -18,7 +26,7 @@ createInertiaApp({
             import.meta.glob("./Pages/**/*.vue")
         );
 
-        page.default.layout = name.endsWith("Login") ? undefined : AdminLayout;
+        page.default.layout = getLayout(name);
 
         return page;
     },
