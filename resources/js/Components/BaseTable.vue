@@ -8,6 +8,9 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    click: {
+        type: Function,
+    },
 });
 </script>
 
@@ -30,6 +33,7 @@ const props = defineProps({
                 <tr
                     v-for="(item, row_index) in data"
                     :key="row_index"
+                    @click="click(item.id)"
                     class="bg-gray-100 border-b hover:bg-gray-200 cursor-pointer"
                 >
                     <slot :item="item" :index="row_index"> </slot>

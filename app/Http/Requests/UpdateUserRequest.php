@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
+use App\Models\UserAccount;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest
@@ -11,7 +15,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +25,13 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        $user = $this->route('usuario');
+
         return [
-            //
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user)],
+            'name' => ['required', 'string', Rule::unique('user_accounts')->ignore($user)],
+            'cpf' => ['required', 'string',  'size:14',  Rule::unique('user_accounts')->ignore($user)],
         ];
     }
 }

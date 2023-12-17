@@ -8,24 +8,35 @@ const { users } = defineProps({
         type: Array,
         required: true,
     },
+    cinemasWithoutAdmin: {
+        type: Array,
+        required: true,
+    },
 });
+
+const roles = { none: 0, admin: 2, user: 3 };
 
 const form = useForm({
     show: true,
     email: "",
-    password: "",
     name: "",
+    password: "",
     cpf: "",
-    role: "",
-    // cinema: "",
+    role_id: roles.none,
+    cinema_id: 0,
 });
 
 const formsIsInvalid = computed(() => {
-    const { show, role, ...fields } = form;
+    const { show, ...fields } = form.data();
+
+    if (fields.role_id === roles.user) form.cinema_id = 0;
 
     for (const field of Object.values(fields)) {
         if (field === "") return true;
     }
+
+    if (fields.role_id === roles.none) return true;
+    if (fields.role_id === roles.admin && fields.cinema_id === 0) return true;
 
     if (form.password.length < 8)
         return {
@@ -36,7 +47,7 @@ const formsIsInvalid = computed(() => {
     const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
     if (!regex.test(form.cpf)) return { field: "cpf", message: "Cpf invalido" };
 
-    for (const { email, user_account, user_roles } of users) {
+    for (const { email, user_account, roles } of users) {
         if (email === form.email)
             return { field: "email", message: "Email já existe" };
 
@@ -49,12 +60,16 @@ const formsIsInvalid = computed(() => {
 
 const submit = () => {
     return form
-        .transform(({ show, role, ...form }) =>
-            role ? { role, ...form } : form
-        )
-        .post("/usuarios", {
+        .transform((data) => {
+            if (data.cinema_id === roles.none) delete data.cinema_id;
+
+            return data;
+        })
+        .post("/admin/usuarios", {
             onSuccess: (data) => {
-                router.visit("/usuarios", { only: ["users"] });
+                router.visit("/admin/usuarios", {
+                    only: ["users", "cinemasWithoutAdmin"],
+                });
                 return form.reset();
             },
         });
@@ -145,9 +160,7 @@ const formatCPF = () => {
                             >Password</label
                         >
                     </div>
-                </div>
 
-                <div class="grid md:grid-cols-2 md:mt-4 md:gap-6 md:mx-2">
                     <div class="mt-4 sm:mt-0 relative z-0 w-full group">
                         <input
                             type="text"
@@ -184,20 +197,57 @@ const formatCPF = () => {
                     </div>
                     <div class="mt-8 sm:mt-4 relative z-0 w-full group">
                         <label
-                            for="role"
+                            for="role_id"
                             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top1 -z-10 origin-[0]"
                             >Função</label
                         >
                         <select
-                            v-model="form.role"
-                            id="role"
-                            @change="UsersFilter"
+                            v-model="form.role_id"
+                            id="role_id"
+                            class="cursor-pointer"
                         >
-                            <option value="">Sem Função</option>
-                            <option value="cinema_admin">
-                                Administrador Cinema
+                            <option :value="roles.none" disabled>
+                                Escolha a Função
                             </option>
-                            <option value="end_user">Usuário</option>
+                            <option
+                                :value="roles.admin"
+                                :disabled="cinemasWithoutAdmin.length < 1"
+                            >
+                                Administrador Cinema
+                                {{
+                                    cinemasWithoutAdmin.length < 1
+                                        ? " Sem cinemas disponíveis"
+                                        : ""
+                                }}
+                            </option>
+                            <option :value="roles.user">Usuário</option>
+                        </select>
+                    </div>
+                    <div class="mt-8 sm:mt-4 relative z-0 w-full group">
+                        <label
+                            for="cinema_id"
+                            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top1 -z-10 origin-[0]"
+                            >Cinema</label
+                        >
+                        <select
+                            v-model="form.cinema_id"
+                            id="cinema_id"
+                            class="disabled:opacity-25 enabled:cursor-pointer"
+                            :disabled="
+                                cinemasWithoutAdmin.length < 1 ||
+                                form.role_id !== roles.admin
+                            "
+                        >
+                            <option :value="roles.none" disabled>
+                                Escolha o Cinema
+                            </option>
+                            <option
+                                v-for="cinema of cinemasWithoutAdmin"
+                                :value="cinema.id"
+                                :key="cinema.id"
+                            >
+                                {{ cinema.name }}
+                            </option>
                         </select>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
@@ -28,7 +29,8 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', 'string'],
             'name' => ['required', 'string'],
             'cpf' => ['required', 'string',  'size:14', 'unique:user_accounts'],
-            'role' => ['string', 'exists:roles,role_name']
+            'role_id' => ['required', 'integer', 'exists:roles,id'],
+            'cinema_id' => ['sometimes', 'required', 'integer', 'exists:cinemas,id']
         ];
     }
 }

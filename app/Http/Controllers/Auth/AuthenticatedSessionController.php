@@ -34,7 +34,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $role = $request->user()->roles[0]->role_name;
+        switch ($role) {
+            case 'root_admin':
+                return redirect('/admin/dashboard');
+                break;
+            case 'cinema_admin':
+                return redirect('/cinema/dashboard');
+                break;
+            case 'end_user':
+                return redirect('/dashboard');
+                break;
+            default:
+                return  abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
