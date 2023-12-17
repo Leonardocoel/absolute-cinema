@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -18,8 +19,9 @@ return new class () extends Migration {
             $table->date('release_date');
             $table->string('genre')->nullable();
             $table->string('language')->nullable();
-            $table->decimal('rating', 3, 1)->nullable();
+            $table->decimal('rating', 2, 1)->nullable();
             $table->boolean('availability');
+            $table->string('image_url');
             $table->timestamps();
         });
     }

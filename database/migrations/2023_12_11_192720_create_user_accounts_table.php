@@ -13,7 +13,7 @@ return new class() extends Migration
     {
         Schema::create('user_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->unique();
+            $table->foreignId('user_id')->constrained()->unique()->onDelete('cascade');
             $table->string('name');
             $table->char('cpf', 14)->constrained()->unique();
             $table->timestamps();
