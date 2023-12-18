@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -13,8 +14,8 @@ return new class () extends Migration {
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cinema_id')->constrained()->onDelete('cascade');
-            $table->timestampTz('start_time');
-            $table->timestampTz('end_time');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->boolean('is_visible');
             $table->timestamps();
             $table->softDeletes();
