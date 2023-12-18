@@ -1,9 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import SidebarLink from "@/Components/SidebarLink.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 
+const page = usePage();
+
+const user = computed(() => page.props.auth.user);
 const showingNavigationSidebar = ref(true);
 </script>
 
@@ -37,7 +40,19 @@ const showingNavigationSidebar = ref(true);
             <div
                 class="ml-1 text-white text-center transition duration-150 ease-in-out"
                 :class="showingNavigationSidebar ? 'sm:ml-60' : 'sm:ml-12'"
-            ></div>
+            >
+                <select
+                    name="cinemas"
+                    id="cinema"
+                    class="bg-transparent py-0 border-none"
+                    :class="{ 'cursor-pointer': user.cinemas.length > 1 }"
+                    :disabled="user.cinemas.length <= 1"
+                >
+                    <option v-for="cinema of user.cinemas" :value="cinema.id">
+                        {{ cinema.name }}
+                    </option>
+                </select>
+            </div>
 
             <Link
                 :href="route('logout')"
@@ -78,7 +93,7 @@ const showingNavigationSidebar = ref(true);
             <ul class="space-y-2 text-lg">
                 <li>
                     <SidebarLink
-                        :href="'/admin/dashboard'"
+                        :href="'/cinema/dashboard'"
                         class="justify-center sm:justify-start"
                         :active="$page.url === '/dashboard'"
                     >
@@ -101,28 +116,8 @@ const showingNavigationSidebar = ref(true);
                 </li>
                 <li>
                     <SidebarLink
-                        :href="'/admin/usuarios'"
-                        :active="$page.url === '/admin/usuarios'"
-                        class="justify-center sm:justify-start"
-                    >
-                        <svg
-                            class="w-5 h-5 text-gray-500 text-green-600"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="currentColor"
-                            viewBox="0 0 20 18"
-                        >
-                            <path
-                                d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"
-                            />
-                        </svg>
-                        <span class="ms-3">Usuários</span>
-                    </SidebarLink>
-                </li>
-                <li>
-                    <SidebarLink
-                        :href="'/admin/cinemas'"
-                        :active="$page.url === '/admin/cinemas'"
+                        href="/cinema/perfil"
+                        :active="$page.url === '/cinema/perfil'"
                         class="justify-center sm:justify-start"
                     >
                         <svg
@@ -142,11 +137,73 @@ const showingNavigationSidebar = ref(true);
 
                         <span class="ms-3">Cinema</span>
                     </SidebarLink>
+
+                    <ul>
+                        <li>
+                            <SidebarLink
+                                :href="`/cinema/sessoes`"
+                                :active="$page.url === `/cinema/sessoes`"
+                                class="justify-center"
+                            >
+                                <span class="">Sessões</span>
+                            </SidebarLink>
+                        </li>
+                        <li>
+                            <SidebarLink
+                                :href="`/cinema/horarios`"
+                                :active="
+                                    $page.url === `/cinema/cinemas/horarios}`
+                                "
+                                class="justify-center"
+                            >
+                                <span class="">Horários</span>
+                            </SidebarLink>
+                        </li>
+                        <li>
+                            <SidebarLink
+                                :href="`/cinema/salas`"
+                                :active="$page.url === `/cinema/cinemas/salas`"
+                                class="justify-center"
+                            >
+                                <span class="md:mr-7">Salas</span>
+                            </SidebarLink>
+                        </li>
+                        <li>
+                            <SidebarLink
+                                :href="`/cinema/tickets`"
+                                :active="$page.url === `/cinema/tickets}`"
+                                class="justify-center"
+                            >
+                                <span class="md:mr-3">Tickets</span>
+                            </SidebarLink>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <SidebarLink
-                        :href="'/admin/filmes'"
-                        :active="$page.url === '/admin/filmes'"
+                        :href="'/cinema/usuarios'"
+                        :active="$page.url === '/cinema/usuarios'"
+                        class="justify-center sm:justify-start"
+                    >
+                        <svg
+                            class="w-5 h-5 text-gray-500 text-green-600"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 20 18"
+                        >
+                            <path
+                                d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"
+                            />
+                        </svg>
+                        <span class="ms-3">Usuários</span>
+                    </SidebarLink>
+                </li>
+
+                <li>
+                    <SidebarLink
+                        :href="'/cinema/filmes'"
+                        :active="$page.url === '/cinema/filmes'"
                         class="justify-center sm:justify-start"
                     >
                         <svg

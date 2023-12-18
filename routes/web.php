@@ -6,7 +6,10 @@ use App\Http\Controllers\RootAdmin\UserController;
 use App\Http\Controllers\RootAdmin\MovieController;
 use App\Http\Controllers\RootAdmin\CinemaController;
 
-
+use App\Http\Controllers\CinemaAdmin\UserController as CinemaUserController;
+use App\Http\Controllers\CinemaAdmin\MovieController as CinemaMovieController;
+use App\Http\Controllers\CinemaAdmin\CinemaController as CinemaCinemaController;
+use App\Models\Cinema;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +26,8 @@ Route::get('/', fn () => redirect('login'));
 
 Route::prefix('admin')
     ->middleware(['auth', 'role:root_admin'])
-    ->namespace('App\Http\Controllers\RootAdmin')
     ->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('RootAdmin/Dashboard'))->name('dashboard');
+        Route::get('/dashboard', fn () => Inertia::render('RootAdmin/Dashboard'));
 
         Route::resource('/usuarios', UserController::class);
 
@@ -34,6 +36,24 @@ Route::prefix('admin')
         Route::resource('/cinemas', CinemaController::class);
 
         Route::resource('/filmes', MovieController::class);
+    });
+
+
+
+
+
+Route::prefix('cinema')
+    ->middleware(['auth', 'role:cinema_admin'])
+    ->group(function () {
+        Route::get('/dashboard', fn () => Inertia::render('CinemaAdmin/Dashboard'));
+
+        Route::post('/usuarios/find', [CinemaUserController::class, 'findUserBy']);
+        Route::resource('/usuarios', CinemaUserController::class);
+
+        Route::get('/perfil', [CinemaCinemaController::class, 'show']);
+        Route::put('/perfil', [CinemaCinemaController::class, 'update']);
+
+        Route::resource('/filmes', CinemaMovieController::class);
     });
 
 
