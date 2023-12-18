@@ -22,6 +22,9 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
+
+        if ($user->roles[0]->role_name === 'cinema_admin') return true;
+
         return false;
     }
 
@@ -30,8 +33,13 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return true;
-        //
+
+        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
+
+        if ($isAdmin &&  $hasValidCinema) return true;
+
+        return false;
     }
 
     /**
@@ -48,6 +56,11 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
+
+        if ($isAdmin &&  $hasValidCinema) return true;
+
         return false;
         //
     }
@@ -57,6 +70,11 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
+
+        if ($isAdmin &&  $hasValidCinema) return true;
+
         return false;
         //
     }

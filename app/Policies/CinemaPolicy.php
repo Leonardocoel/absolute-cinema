@@ -31,6 +31,10 @@ class CinemaPolicy
      */
     public function view(User $user, Cinema $cinema): bool
     {
+        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+
+        if ($isAdmin) return true;
+
         return true;
     }
 
@@ -47,6 +51,11 @@ class CinemaPolicy
      */
     public function update(User $user, Cinema $cinema): bool
     {
+
+        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+
+        if ($isAdmin) return true;
+
         return false;
     }
 

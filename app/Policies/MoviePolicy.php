@@ -23,6 +23,9 @@ class MoviePolicy
      */
     public function viewAny(User $user): bool
     {
+
+        if ($user->roles[0]->role_name === 'cinema_admin') return true;
+
         return false;
     }
 
@@ -31,6 +34,8 @@ class MoviePolicy
      */
     public function view(User $user, Movie $movie): bool
     {
+        if ($user->roles[0]->role_name === 'cinema_admin') return true;
+
         return false;
     }
 
