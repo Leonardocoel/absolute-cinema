@@ -2,20 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
-use App\Models\UserAccount;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class StoreTicketRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -25,12 +21,8 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-
-        $user = $this->route('usuario');
-
         return [
-            'name' => ['required', 'string', Rule::unique('user_accounts')->ignore($user)],
-            'cpf' => ['required', 'string',  'size:14',  Rule::unique('user_accounts')->ignore($user)],
+            //
         ];
     }
 }

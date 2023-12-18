@@ -10,11 +10,13 @@ use App\Models\RoleUser;
 use App\Models\UserAccount;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use League\CommonMark\Environment\Environment;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -22,6 +24,9 @@ class User extends Authenticatable
     use HasFactory;
     use Notifiable;
     use SoftDeletes;
+
+
+    protected $with = ['roles', 'userAccount'];
 
     /**
      * The attributes that are mass assignable.
@@ -67,5 +72,10 @@ class User extends Authenticatable
     public function cinemas(): BelongsToMany
     {
         return $this->belongsToMany(Cinema::class, 'role_users')->using(RoleUser::class)->withTimestamps()->withPivot('role_id');
+    }
+
+    public function reservations(): HasManyThrough
+    {
+        return $this->through('userAccount')->has('reservations');
     }
 }

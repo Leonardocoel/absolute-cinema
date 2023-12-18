@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
@@ -24,16 +25,20 @@ class UpdateCinemaRequest extends FormRequest
     public function rules(): array
     {
 
-        $user = $this->route('cinema');
+        $cinema = $this->route('cinema');
+
+        if (!$cinema) {
+            $cinema = User::find(Auth::id())->load(['cinemas'])->cinemas[0];
+        }
 
         return [
-            'name' => ['required', 'string', Rule::unique('cinemas')->ignore($user)],
-            'cnpj' => ['required', 'string',  'size:18', Rule::unique('cinemas')->ignore($user)],
-            'email' => ['required', 'string', 'email', Rule::unique('cinemas')->ignore($user)],
+            'name' => ['required', 'string', Rule::unique('cinemas')->ignore($cinema)],
+            'cnpj' => ['required', 'string',  'size:18', Rule::unique('cinemas')->ignore($cinema)],
+            'email' => ['required', 'string', 'email', Rule::unique('cinemas')->ignore($cinema)],
             'state' => ['required', 'string', 'size:2'],
             'city' => ['required', 'string'],
             'address' => ['required', 'string'],
-            'phone' => ['string', Rule::unique('cinemas')->ignore($user)]
+            'phone' => ['string', Rule::unique('cinemas')->ignore($cinema)]
         ];
     }
 }
