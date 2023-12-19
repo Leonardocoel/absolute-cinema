@@ -14,8 +14,8 @@ return new class() extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('room_id')->constrained()->onDelete('cascade');
-            $table->timeTz('start_time');
-            $table->timeTz('end_time');
+            $table->timestampTz('start_time');
+            $table->timestampTz('end_time');
             $table->timestamps();
         });
     }

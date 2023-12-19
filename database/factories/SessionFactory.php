@@ -19,7 +19,7 @@ class SessionFactory extends Factory
 
     public function definition()
     {
-        $startDate = fake()->date();
+        $startDate = fake()->dateTimeBetween('-6 months');
         $endDate = Carbon::parse($startDate)->addWeek();
 
         return [

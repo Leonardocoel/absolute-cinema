@@ -20,7 +20,7 @@ class ScheduleFactory extends Factory
     {
         return [
             "room_id" => Room::factory(),
-            "start_time" => fake()->time(),
+            "start_time" => fake()->dateTimeBetween('-3 months'),
             "end_time" => fn ($attr) => Carbon::parse($attr['start_time'])->addMinutes(120),
         ];
     }

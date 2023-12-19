@@ -17,10 +17,10 @@ class MovieFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->sentence(),
-            'synopsis' => fake()->paragraph(),
+            'title' => fake('pt-br')->sentence(3),
+            'synopsis' => fake('pt-br')->paragraph(),
             'duration_minutes' => fake()->numberBetween(60, 180),
-            'release_date' => fake()->date(),
+            'release_date' => fake()->dateTimeBetween('-6 months'),
             'genre' => fake()->randomElement(['ação', 'aventura', 'comédia']),
             'language' => fake()->randomElement(['Dublado', 'Nacional', 'Legendado']),
             'rating' => fake()->randomFloat(1, 1, 5),
