@@ -15,7 +15,7 @@ return new class() extends Migration
             $table->id();
             $table->foreignId('ticket_id')->constrained();
             $table->foreignId('user_account_id')->constrained()->onDelete('set null');
-            $table->foreignId('session_schedule_id')->constrained();
+            $table->foreignId('session_schedule_id')->constrained('session_schedule');
             $table->foreignId('seat_id')->constrained()->onDelete('set null');
             $table->decimal('price', 19, 4)->unsigned();
             $table->boolean('is_half');

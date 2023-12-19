@@ -125,60 +125,6 @@ const handleClick = (id) => router.visit(`/cinema/filmes/${id}`);
                             >Data de lançamento</label
                         >
                     </div>
-                    <!-- <div class="mt-4 sm:mt-0 relative z-0 w-full group flex">
-                        <div class="mt-3 sm:mt-3 flex items-center me-4">
-                            <input
-                                id="filter_availability_yes"
-                                type="radio"
-                                value=""
-                                @change="MoviesFilter"
-                                v-model="filter.availability"
-                                name="filter_availability-group"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
-                            />
-                            <label
-                                for="filter_availability_yes"
-                                class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                                >Todos</label
-                            >
-                        </div>
-                        <div class="mt-3 sm:mt-3 flex items-center me-4">
-                            <input
-                                id="filter_availability_yes"
-                                type="radio"
-                                :value="true"
-                                @change="MoviesFilter"
-                                v-model="filter.availability"
-                                name="filter_availability-group"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
-                            />
-                            <label
-                                for="filter_availability_yes"
-                                class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                                >Sim</label
-                            >
-                        </div>
-                        <div class="mt-3 sm:mt-3 flex items-center me-4">
-                            <input
-                                id="filter_availability_no"
-                                type="radio"
-                                :value="false"
-                                @change="MoviesFilter"
-                                v-model="filter.availability"
-                                name="filter_availability-group"
-                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 cursor-pointer"
-                            />
-                            <label
-                                for="filter_availability_no"
-                                class="ms-2 text-sm font-medium text-gray-900 cursor-pointer"
-                                >Não</label
-                            >
-                        </div>
-                        <label
-                            class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                            >Disponível para exibição</label
-                        >
-                    </div> -->
                 </div>
             </form>
         </section>
@@ -202,7 +148,7 @@ const handleClick = (id) => router.visit(`/cinema/filmes/${id}`);
                 <img
                     :src="'/storage/' + item.image_url"
                     alt=""
-                    class="w-80 max-w-96"
+                    class="w-60 max-w-80"
                 />
             </td>
             <td scope="row" class="px-6">

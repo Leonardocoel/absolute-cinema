@@ -16,28 +16,6 @@ use App\Http\Requests\UpdateCinemaAdminRequest;
 class CinemaController extends Controller
 {
 
-    public function __construct()
-    {
-        // $this->authorizeResource(Cinema::class, 'cinema');
-    }
-
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCinemaRequest $request)
-    {
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Cinema $cinema)
     {
         $this->authorize('view', $cinema);
@@ -60,14 +38,10 @@ class CinemaController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCinemaRequest $request)
     {
+
         try {
-
-
             $user = User::find(Auth::id())->load(['cinemas']);
             $cinema = $user->cinemas[0];
 
@@ -79,13 +53,5 @@ class CinemaController extends Controller
 
             dd($e);
         }
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Cinema $cinema)
-    {
     }
 }

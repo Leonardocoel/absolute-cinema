@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -31,9 +32,7 @@ class UserController extends Controller
         return ["cinema" => $user->cinemas[0], 'user' => $user];
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
 
@@ -74,55 +73,28 @@ class UserController extends Controller
         return response()->json(['user' => $user]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+
     public function create()
     {
-        //
+        //* leva para uma pagina com as informações encontradas
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(StoreUserRequest $request)
     {
-        // try {
-        //     DB::beginTransaction();
-
-        //     $user = User::create($request->only(['email', 'password']));
-
-
-        //     $user->userAccount()->create($request->only(['name', 'cpf']));
-
-        //     if ($request->role_id === 2) {
-        //         $cinemaId =  $request->cinema_id;
-        //         $hasAdmin = Cinema::where('id', $cinemaId)->whereHas('users', fn ($q) => $q->where('role_id', 2))->exists();
-
-        //         if ($hasAdmin) {
-        //             return back()->withErrors(['create' => 'Cinema already has an admin']);
-        //         }
-
-        //         $user->roles()->attach($request->role_id, ['cinema_id' =>  $cinemaId]);
-        //     }
-
-        //     DB::commit();
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        // }
+        //* vincula usuario ao cinema vigente e possibilita atualização de perfil
     }
 
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(User $usuario)
     {
         $cinema = $this->admin()['cinema'];
 
+        //* lista reservas relacionadas ao usuario, podendo gerenciar ou redirecionar para a pagina de gerenciamento
+
         $usuario->load([
-            'reservations' => fn ($q) => $q->whereHas('session_schedule.session', $cinema->id),
+            // 'reservations' => fn ($q) => $q->whereRelation('sessionSchedule.session', 'cinema_id', $cinema->id),
             'roles' => fn ($q) => $q->where('cinema_id', $cinema->id)
         ]);
 
@@ -133,16 +105,7 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id, Request $request)
-    {
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateUserRequest $request, User $usuario)
     {
         try {
@@ -154,9 +117,7 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(User $usuario)
     {
         $cinema = $this->admin()['cinema'];

@@ -104,16 +104,12 @@ class DatabaseSeeder extends Seeder
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached($movies)
             ->create();
 
 
         Session::factory(1)
             ->recycle($cinemas)
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
@@ -147,7 +143,7 @@ class DatabaseSeeder extends Seeder
             $cinema->users()->attach($users->pluck('id'), ['role_id' => 3]);
         }
 
-        $sessionSchedules =  DB::table('session_schedules')->get()->pluck('id');
+        $sessionSchedules =  DB::table('session_schedule')->get()->pluck('id');
         $tickets = Ticket::all();
         $seats = Seat::all();
 

@@ -25,9 +25,9 @@ class Reservation extends Model
         return $this->belongsTo(Ticket::class);
     }
 
-    public function sessionSchedules(): BelongsTo
+    public function sessionSchedule(): BelongsTo
     {
-        return $this->belongsTo(SessionSchedule::class, 'session_schedules');
+        return $this->belongsTo(SessionSchedule::class);
     }
 
     public function seat(): BelongsTo

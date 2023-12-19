@@ -20,9 +20,7 @@ class CinemaController extends Controller
         $this->authorizeResource(Cinema::class, 'cinema');
     }
 
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         try {
@@ -38,9 +36,7 @@ class CinemaController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(StoreCinemaRequest $request)
     {
         try {
@@ -52,9 +48,6 @@ class CinemaController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Cinema $cinema)
     {
         try {
@@ -77,9 +70,7 @@ class CinemaController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(UpdateCinemaRequest $request, Cinema $cinema)
     {
         try {
@@ -126,9 +117,6 @@ class CinemaController extends Controller
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Cinema $cinema)
     {
         try {

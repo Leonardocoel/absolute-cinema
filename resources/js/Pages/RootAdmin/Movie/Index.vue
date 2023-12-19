@@ -204,7 +204,7 @@ const handleClick = (id) => router.visit(`/admin/filmes/${id}`);
                 <img
                     :src="'/storage/' + item.image_url"
                     alt=""
-                    class="w-80 max-w-96"
+                    class="w-64 max-w-80"
                 />
             </td>
             <td scope="row" class="px-6">

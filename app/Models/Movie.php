@@ -39,11 +39,11 @@ class Movie extends Model
 
     public function scheduleSessions(): BelongsToMany
     {
-        return $this->belongsToMany(Session::class, 'session_schedules')->using(SessionSchedule::class)->withTimestamps()->withPivot('schedule_id');
+        return $this->belongsToMany(Session::class, 'session_schedule')->using(SessionSchedule::class)->withTimestamps()->withPivot('schedule_id');
     }
 
     public function schedules(): BelongsToMany
     {
-        return $this->belongsToMany(Schedule::class, 'session_schedules')->using(SessionSchedule::class)->withTimestamps()->withPivot('movie_id');
+        return $this->belongsToMany(Schedule::class, 'session_schedule')->using(SessionSchedule::class)->withTimestamps()->withPivot('movie_id');
     }
 }

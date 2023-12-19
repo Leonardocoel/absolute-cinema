@@ -8,12 +8,21 @@ use Illuminate\Auth\Access\Response;
 
 class SchedulePolicy
 {
+    public function before(User $user, string $ability): bool|null
+    {
+
+        if ($user->roles[0]->role_name === 'root_admin') {
+            return true;
+        }
+
+        return null;
+    }
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -21,7 +30,7 @@ class SchedulePolicy
      */
     public function view(User $user, Schedule $schedule): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -29,7 +38,7 @@ class SchedulePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -37,7 +46,7 @@ class SchedulePolicy
      */
     public function update(User $user, Schedule $schedule): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -45,7 +54,7 @@ class SchedulePolicy
      */
     public function delete(User $user, Schedule $schedule): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -53,7 +62,7 @@ class SchedulePolicy
      */
     public function restore(User $user, Schedule $schedule): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +70,6 @@ class SchedulePolicy
      */
     public function forceDelete(User $user, Schedule $schedule): bool
     {
-        //
+        return false;
     }
 }

@@ -41,7 +41,7 @@ const order = (array) => array.toSorted((a, b) => b.views - a.views);
             class="sm:row-span-3 sm:col-span-8 w-full h-full border-2 bg-gray-50 rounded-xl"
         >
             <div class="p-4">
-                <p>Valor arrecadado por semana(gráfico)</p>
+                <p>Valor arrecadado na semana(gráfico)</p>
                 <p class="my-2">TOTAL: {{ moviesWeekTotal }}</p>
                 <div class="flex justify-between">
                     <span>segunda</span>

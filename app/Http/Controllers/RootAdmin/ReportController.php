@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\CinemaAdmin;
+namespace App\Http\Controllers\RootAdmin;
 
 use Carbon\Carbon;
 use App\Models\User;
@@ -15,11 +15,16 @@ use App\Http\Requests\UpdateMovieRequest;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        // $this->authorizeResource(Movie::class, 'filme');
+    }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $user = User::find(Auth::id())->load(['cinemas']);
-        $cinema = $user->cinemas[0];
 
         try {
             $query = DB::table('movies as m')
@@ -28,34 +33,17 @@ class ReportController extends Controller
                 ->join('sessions as s', 's.id', '=', 'ss.session_id')
                 ->join('reservations as r', 'r.session_schedule_id', '=', 'ss.id')
                 ->select('m.id', 'm.title', 'm.release_date', DB::raw('COUNT(m.id) as views'), DB::raw('SUM(price) as total'))
-                ->where('s.cinema_id', '=', $cinema->id)
                 ->groupBy('m.id');
 
-
-            // cast data
+            //* cast release_date
 
             $movies = $query->orderByDesc('m.release_date')->get();
 
             $moviesWeek = $query->where('start_time', '>=', now()->subDays(7))->get();
 
-            return Inertia::render('CinemaAdmin/Dashboard', [
+            return Inertia::render('RootAdmin/Dashboard', [
                 'movies' => $movies,
                 'moviesWeek' => $moviesWeek,
-            ]);
-        } catch (\Exception $e) {
-            dd($e);
-        }
-    }
-
-
-    public function show(Movie $filme)
-    {
-        try {
-
-            $filme->release_date_raw = Carbon::parse($filme->release_date)->format('Y-m-d');
-
-            return Inertia::render('CinemaAdmin/Movie/Show', [
-                'movie' => $filme,
             ]);
         } catch (\Exception $e) {
             dd($e);
