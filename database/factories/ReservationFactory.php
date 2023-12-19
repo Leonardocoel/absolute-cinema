@@ -25,7 +25,7 @@ class ReservationFactory extends Factory
             'user_account_id' => UserAccount::factory(),
             'session_schedule_id' => SessionSchedule::factory(),
             'seat_id' => Seat::factory(),
-            'price' => fn ($attr) => Ticket::find($attr['ticket_id'])->price,
+            'price' => fn ($attr) => Ticket::find($attr['ticket_id'])->price / 2,
             'is_half' => fake()->boolean(),
         ];
     }

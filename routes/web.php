@@ -4,12 +4,12 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RootAdmin\UserController;
 use App\Http\Controllers\RootAdmin\MovieController;
-use App\Http\Controllers\RootAdmin\CinemaController;
 
+use App\Http\Controllers\RootAdmin\CinemaController;
+use App\Http\Controllers\CinemaAdmin\ReportController;
 use App\Http\Controllers\CinemaAdmin\UserController as CinemaUserController;
 use App\Http\Controllers\CinemaAdmin\MovieController as CinemaMovieController;
 use App\Http\Controllers\CinemaAdmin\CinemaController as CinemaCinemaController;
-use App\Models\Cinema;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ Route::prefix('admin')
 Route::prefix('cinema')
     ->middleware(['auth', 'role:cinema_admin'])
     ->group(function () {
-        Route::get('/dashboard', fn () => Inertia::render('CinemaAdmin/Dashboard'));
+        Route::resource('/dashboard', ReportController::class);
 
         Route::post('/usuarios/find', [CinemaUserController::class, 'findUserBy']);
         Route::resource('/usuarios', CinemaUserController::class);

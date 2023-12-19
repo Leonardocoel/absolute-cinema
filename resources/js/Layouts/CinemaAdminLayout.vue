@@ -228,14 +228,10 @@ const showingNavigationSidebar = ref(true);
         </div>
     </aside>
 
-    <div class="h-screen">
-        <main
-            class="pt-12"
-            :class="showingNavigationSidebar && '2xl:ml-60 sm:ml-48'"
-        >
-            <!-- Breadcrumb -->
-            <!-- <span>{{ $page.component }}</span> -->
-            <slot></slot>
-        </main>
-    </div>
+    <main
+        class="h-screen pt-12"
+        :class="showingNavigationSidebar && '2xl:pl-60 sm:pl-48'"
+    >
+        <slot></slot>
+    </main>
 </template>
