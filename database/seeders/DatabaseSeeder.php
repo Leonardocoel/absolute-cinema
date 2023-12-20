@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         DB::table('role_users')->insert(['user_id' => $rootAdmin->id, 'role_id' => $rootAdminId, 'created_at' => $now, 'updated_at' => $now]);
 
 
-        $movies =  Movie::factory(30)->create();
+        $movies =  Movie::factory(15)->create();
 
 
         $cinema = Cinema::factory()
@@ -61,26 +61,22 @@ class DatabaseSeeder extends Seeder
             ->create();
 
 
-
-        Session::factory(3)
+        Session::factory(4)
             ->recycle($cinema)
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached($movies)
             ->create();
 
-        Session::factory(2)
-            ->recycle($cinema)
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached($movies)
-            ->create();
 
 
         $cinemas = Cinema::factory(4)
@@ -90,31 +86,13 @@ class DatabaseSeeder extends Seeder
             ->create();
 
 
-
-        Session::factory(3)
-            ->recycle($cinemas)
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached($movies)
-            ->create();
-
         Session::factory(4)
             ->recycle($cinemas)
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached($movies)
-            ->create();
-
-
-        Session::factory(1)
-            ->recycle($cinemas)
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
+            ->hasAttached(Schedule::factory()->lastWeek(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
             ->hasAttached(Schedule::factory(), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
-            ->hasAttached(Schedule::factory()->create(['start_time' => fake()->dateTimeBetween('-1 week')]), ['movie_id' => $movies->random()->id])
             ->hasAttached($movies)
             ->create();
 
@@ -137,7 +115,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        $users = User::whereRelation('roles', 'role_id', 3)->get();
+        $users = UserAccount::whereRelation('user.roles', 'role_id', 3)->get();
 
         foreach ($cinemas as $cinema) {
             $cinema->users()->attach($users->pluck('id'), ['role_id' => 3]);
@@ -148,7 +126,7 @@ class DatabaseSeeder extends Seeder
         $seats = Seat::all();
 
         foreach ($sessionSchedules as $ss) {
-            Reservation::factory(30)
+            Reservation::factory(21)
                 ->recycle($users)
                 ->recycle($seats)
                 ->recycle($movies)

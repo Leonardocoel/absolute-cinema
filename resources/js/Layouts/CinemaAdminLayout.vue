@@ -140,8 +140,8 @@ const showingNavigationSidebar = ref(true);
 
                     <ul>
                         <li>
+                            <!-- :href="`/cinema/sessoes`" -->
                             <SidebarLink
-                                :href="`/cinema/sessoes`"
                                 :active="$page.url === `/cinema/sessoes`"
                                 class="justify-center"
                             >
@@ -149,8 +149,8 @@ const showingNavigationSidebar = ref(true);
                             </SidebarLink>
                         </li>
                         <li>
+                            <!-- :href="`/cinema/horarios`" -->
                             <SidebarLink
-                                :href="`/cinema/horarios`"
                                 :active="
                                     $page.url === `/cinema/cinemas/horarios}`
                                 "
@@ -160,8 +160,8 @@ const showingNavigationSidebar = ref(true);
                             </SidebarLink>
                         </li>
                         <li>
+                            <!-- :href="`/cinema/salas`" -->
                             <SidebarLink
-                                :href="`/cinema/salas`"
                                 :active="$page.url === `/cinema/cinemas/salas`"
                                 class="justify-center"
                             >
@@ -169,8 +169,8 @@ const showingNavigationSidebar = ref(true);
                             </SidebarLink>
                         </li>
                         <li>
+                            <!-- :href="`/cinema/tickets`" -->
                             <SidebarLink
-                                :href="`/cinema/tickets`"
                                 :active="$page.url === `/cinema/tickets}`"
                                 class="justify-center"
                             >

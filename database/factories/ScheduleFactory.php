@@ -24,4 +24,11 @@ class ScheduleFactory extends Factory
             "end_time" => fn ($attr) => Carbon::parse($attr['start_time'])->addMinutes(120),
         ];
     }
+
+    public function lastWeek(): Factory
+    {
+        return $this->state(fn (array $attributes) => [
+            'start_time' => fake()->dateTimeBetween('-1 week')
+        ]);
+    }
 }

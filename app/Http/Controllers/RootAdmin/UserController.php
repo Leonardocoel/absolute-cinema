@@ -6,11 +6,11 @@ use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Cinema;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -38,15 +38,19 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
+
+
         try {
             DB::beginTransaction();
 
             $user = User::create($request->only(['email', 'password']));
 
-
             $user->userAccount()->create($request->only(['name', 'cpf']));
 
-            if ($request->role_id === 2) {
+            $cinemaAdmin = Role::where('role_name', 'cinema_admin')->first();
+
+            if ($request->role_id === $cinemaAdmin->id) {
+
                 $cinemaId =  $request->cinema_id;
                 $hasAdmin = Cinema::where('id', $cinemaId)->whereHas('users', fn ($q) => $q->where('role_id', 2))->exists();
 
@@ -56,9 +60,10 @@ class UserController extends Controller
 
                 $user->roles()->attach($request->role_id, ['cinema_id' =>  $cinemaId]);
             }
-
             DB::commit();
+            return Redirect::back()->with('success', 'User created.');
         } catch (\Exception $e) {
+            dump('ERRO');
             DB::rollBack();
         }
     }
@@ -67,9 +72,7 @@ class UserController extends Controller
 
     public function show(User $usuario)
     {
-
         $usuario->load(['userAccount', 'roles', 'cinemas']);
-
 
         return Inertia::render('RootAdmin/User/Show', [
             'user' => $usuario
@@ -80,6 +83,7 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
+
 
             $usuario->update(['email' => $request->email]);
             $usuario->userAccount->update(["name" => $request->name, "cpf" => $request->cpf]);

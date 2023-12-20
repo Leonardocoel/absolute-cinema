@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
 use App\Models\Session;
 use App\Models\Schedule;
+use App\Models\Reservation;
 use App\Models\SessionMovie;
 use App\Models\SessionSchedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Movie extends Model
 {
@@ -45,5 +46,10 @@ class Movie extends Model
     public function schedules(): BelongsToMany
     {
         return $this->belongsToMany(Schedule::class, 'session_schedule')->using(SessionSchedule::class)->withTimestamps()->withPivot('movie_id');
+    }
+
+    public function reservations(): HasManyThrough
+    {
+        return $this->hasManyThrough(Reservation::class, SessionSchedule::class, 'movie_id', 'session_schedule_id');
     }
 }

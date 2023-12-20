@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\CinemaAdmin;
 
-use App\Models\Role;
+
 use App\Models\User;
 use Inertia\Inertia;
-use App\Models\Cinema;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\Reservation;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Database\Eloquent\Builder;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UserController extends Controller
 {
@@ -54,9 +50,7 @@ class UserController extends Controller
     {
         $request->validate(['email' => ['nullable', 'email'], 'cpf' => ['nullable', 'string']]);
 
-        //if user exists but cant be registered return...
 
-        //else
         $user = User::whereDoesntHave('roles', fn ($q) => $q->whereIn('role_id', [1, 2]))
             ->where(
                 fn (Builder $q) => $q
@@ -74,19 +68,6 @@ class UserController extends Controller
     }
 
 
-
-    public function create()
-    {
-        //* leva para uma pagina com as informações encontradas
-    }
-
-
-    public function store(StoreUserRequest $request)
-    {
-        //* vincula usuario ao cinema vigente e possibilita atualização de perfil
-    }
-
-
     public function show(User $usuario)
     {
         $cinema = $this->admin()['cinema'];
@@ -98,15 +79,13 @@ class UserController extends Controller
             'roles' => fn ($q) => $q->where('cinema_id', $cinema->id)
         ]);
 
-
-
         return Inertia::render('CinemaAdmin/User/Show', [
             'user' => $usuario
         ]);
     }
 
 
-    public function update(UpdateUserRequest $request, User $usuario)
+    public function update(UpdateUserRequest $request, User $usuario): void
     {
         try {
 
@@ -118,7 +97,7 @@ class UserController extends Controller
     }
 
 
-    public function destroy(User $usuario)
+    public function destroy(User $usuario): RedirectResponse
     {
         $cinema = $this->admin()['cinema'];
 

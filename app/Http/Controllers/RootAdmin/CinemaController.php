@@ -5,7 +5,6 @@ namespace App\Http\Controllers\RootAdmin;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Cinema;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCinemaRequest;
 use App\Http\Requests\UpdateCinemaRequest;

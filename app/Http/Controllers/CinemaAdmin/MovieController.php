@@ -5,11 +5,8 @@ namespace App\Http\Controllers\CinemaAdmin;
 use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Movie;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\StoreMovieRequest;
-use App\Http\Requests\UpdateMovieRequest;
+
 
 class MovieController extends Controller
 {

@@ -36,6 +36,6 @@ class SessionSchedule extends Pivot
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class, 'session_schedule_id');
     }
 }
