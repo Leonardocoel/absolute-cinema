@@ -149,17 +149,6 @@ const showingNavigationSidebar = ref(true);
                             </SidebarLink>
                         </li>
                         <li>
-                            <!-- :href="`/cinema/horarios`" -->
-                            <SidebarLink
-                                :active="
-                                    $page.url === `/cinema/cinemas/horarios}`
-                                "
-                                class="justify-center"
-                            >
-                                <span class="">Horários</span>
-                            </SidebarLink>
-                        </li>
-                        <li>
                             <!-- :href="`/cinema/salas`" -->
                             <SidebarLink
                                 :active="$page.url === `/cinema/cinemas/salas`"
