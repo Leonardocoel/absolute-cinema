@@ -51,7 +51,7 @@ class UserController extends Controller
         $request->validate(['email' => ['nullable', 'email'], 'cpf' => ['nullable', 'string']]);
 
 
-        $user = User::whereDoesntHave('roles', fn ($q) => $q->whereIn('role_id', [1, 2]))
+        $user = User::whereDoesntHave('roles', fn ($q) => $q->whereIn('role_name', ['root_admin', 'cinema_admin']))
             ->where(
                 fn (Builder $q) => $q
                     ->whereHas('userAccount', fn ($q) => $q->where('cpf', $request->cpf))
@@ -75,7 +75,6 @@ class UserController extends Controller
         //* lista reservas relacionadas ao usuario, podendo gerenciar ou redirecionar para a pagina de gerenciamento
 
         $usuario->load([
-            // 'reservations' => fn ($q) => $q->whereRelation('sessionSchedule.session', 'cinema_id', $cinema->id),
             'roles' => fn ($q) => $q->where('cinema_id', $cinema->id)
         ]);
 
@@ -88,7 +87,6 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $usuario): void
     {
         try {
-
             $usuario->userAccount->update(["name" => $request->name, "cpf" => $request->cpf]);
         } catch (\Exception $e) {
 
