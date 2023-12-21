@@ -37,16 +37,3 @@ class ReportController extends Controller
         ]);
     }
 }
-
-
- // $query = DB::table('movies as m')
-        //     ->join('session_schedule as ss', 'ss.movie_id', '=', 'm.id')
-        //     ->join('schedules as sc', 'sc.id', '=', 'ss.schedule_id')
-        //     ->join('reservations as r', 'r.session_schedule_id', '=', 'ss.id')
-        //     ->select('m.id', 'm.title', 'm.release_date', DB::raw('COUNT(m.id) as views'), DB::raw('SUM(price) as total'))
-        //     ->groupBy('m.id');
-
-
-        // $movies = $query->orderByDesc('m.release_date')->get();
-
-        // $moviesWeek = $query->where('start_time', '>=', now()->subDays(7))->get();
