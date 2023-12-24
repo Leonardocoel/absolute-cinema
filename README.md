@@ -66,6 +66,10 @@
         laravelsail/php82-composer:latest \
         composer install --ignore-platform-reqs
 
+- Configure .env:
+
+        copy or rename .env.example to .env and configure database
+
 - Start Sail in the background:
 
         ./vendor/bin/sail up -d
