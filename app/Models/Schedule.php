@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Models\Room;
 use App\Models\Movie;
 use App\Models\Session;
-use App\Models\SessionSchedule;
+use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Schedule extends Model
 {
@@ -23,13 +23,18 @@ class Schedule extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function movies(): BelongsToMany
+    public function movies(): BelongsTo
     {
-        return $this->belongsToMany(Movie::class, 'session_schedule')->using(SessionSchedule::class)->withTimestamps()->withPivot('session_id');
+        return $this->belongsTo(Movie::class);
     }
 
-    public function sessions(): BelongsToMany
+    public function sessions(): BelongsTo
     {
-        return $this->belongsToMany(Session::class, 'session_schedule')->using(SessionSchedule::class)->withTimestamps()->withPivot('movie_id');
+        return $this->belongsTo(Session::class);
+    }
+
+    public function reservations(): HasMany
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

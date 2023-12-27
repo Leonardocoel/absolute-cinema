@@ -11,12 +11,11 @@ return new class() extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_accounts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->unique()->onDelete('cascade');
-            $table->string('name');
-            $table->char('cpf', 14)->constrained()->unique();
-            $table->timestamps();
+        Schema::create('movie_session', function (Blueprint $table) {
+            $table->foreignId('session_id')->constrained()->onDelete('cascade');
+            $table->foreignId('movie_id')->constrained();
+
+            $table->primary(['session_id', 'movie_id']);
         });
     }
 
@@ -25,6 +24,6 @@ return new class() extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_accounts');
+        Schema::dropIfExists('movie_session');
     }
 };

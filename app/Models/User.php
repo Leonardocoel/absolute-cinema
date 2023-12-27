@@ -4,19 +4,17 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\Role;
+
 use App\Models\Cinema;
-use App\Models\RoleUser;
-use App\Models\UserAccount;
+use App\Models\Reservation;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use League\CommonMark\Environment\Environment;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 
 class User extends Authenticatable
 {
@@ -25,18 +23,18 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-
-    protected $with = ['roles', 'userAccount'];
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'email',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'cpf',
+    //     'email',
+    //     'password',
+    //     'role'
+    // ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -58,24 +56,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
-    public function userAccount(): HasOne
-    {
-        return $this->hasOne(UserAccount::class);
-    }
-
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'role_users')->using(RoleUser::class)->withTimestamps()->withPivot('cinema_id');
-    }
-
     public function cinemas(): BelongsToMany
     {
-        return $this->belongsToMany(Cinema::class, 'role_users')->using(RoleUser::class)->withTimestamps()->withPivot('role_id');
+        return $this->belongsToMany(Cinema::class)->withTimestamps();
     }
 
-    public function reservations(): HasManyThrough
+    public function reservations(): HasMany
     {
-        return $this->through('userAccount')->has('reservations');
+        return $this->hasMany(Reservation::class);
     }
 }

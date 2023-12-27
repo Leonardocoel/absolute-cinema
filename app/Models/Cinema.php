@@ -6,9 +6,9 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\Session;
-use App\Models\RoleUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -25,17 +25,7 @@ class Cinema extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'role_users')->using(RoleUser::class)->withTimestamps()->withPivot('role_id');
-    }
-
-    public function admin(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'role_users')->wherePivot('role_id', 2)->using(RoleUser::class)->withTimestamps()->withPivot('role_id');
-    }
-
-    public function sessions(): HasMany
-    {
-        return $this->hasMany(Session::class);
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 
     public function rooms(): HasMany
@@ -46,5 +36,16 @@ class Cinema extends Model
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(Session::class);
+    }
+
+
+    public function latestSession(): HasOne
+    {
+        return $this->hasOne(Session::class)->OfMany('start_date', 'max');
     }
 }
