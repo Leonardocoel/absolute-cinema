@@ -17,6 +17,7 @@ return new class() extends Migration
             $table->foreignId('session_id')->constrained()->onDelete('cascade');
             $table->timeTz('start_time');
             $table->date('day');
+            $table->foreignId('movie_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
