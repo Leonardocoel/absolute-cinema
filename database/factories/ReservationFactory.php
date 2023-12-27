@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Seat;
+use App\Models\User;
 use App\Models\Ticket;
-use App\Models\UserAccount;
-use App\Models\SessionSchedule;
+use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,10 +22,13 @@ class ReservationFactory extends Factory
     {
         return [
             'ticket_id' => Ticket::factory(),
-            'user_account_id' => UserAccount::factory(),
-            'session_schedule_id' => SessionSchedule::factory(),
+            'user_id' => User::factory(),
+            'schedule_id' => Schedule::factory(),
             'seat_id' => Seat::factory(),
-            'price' => fn ($attr) => Ticket::find($attr['ticket_id'])->price / 2,
+            'price' => function ($attr) {
+                $price = Ticket::find($attr['ticket_id'])->price;
+                return $attr['is_half'] ? $price / 2 : $price;
+            },
             'is_half' => fake()->boolean(),
         ];
     }

@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use Carbon\Carbon;
 use App\Models\Room;
+use App\Models\Movie;
+use App\Models\Session;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,6 +13,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ScheduleFactory extends Factory
 {
+    private static $latestSchedule = [];
+
+
+
     /**
      * Define the model's default state.
      *
@@ -20,15 +26,19 @@ class ScheduleFactory extends Factory
     {
         return [
             "room_id" => Room::factory(),
-            "start_time" => fake()->dateTimeBetween('-3 months'),
-            "end_time" => fn ($attr) => Carbon::parse($attr['start_time'])->addMinutes(120),
-        ];
-    }
+            "session_id" => Session::factory(),
+            "start_time" => fake()->time(),
+            "day" => function ($attr) {
+                ['session_id' => $session_id, 'room_id' => $room_id] = $attr;
 
-    public function lastWeek(): Factory
-    {
-        return $this->state(fn (array $attributes) => [
-            'start_time' => fake()->dateTimeBetween('-1 week')
-        ]);
+                self::$latestSchedule[$session_id][$room_id] = isset(self::$latestSchedule[$session_id][$room_id])
+                    ? Carbon::parse(self::$latestSchedule[$session_id][$room_id])->addDay()
+                    : Session::find($session_id)->start_date;
+
+
+                return self::$latestSchedule[$session_id][$room_id];
+            },
+            "movie_id" => Movie::factory()
+        ];
     }
 }
