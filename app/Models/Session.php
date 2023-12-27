@@ -6,6 +6,7 @@ use App\Models\Movie;
 use App\Models\Cinema;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,5 +30,10 @@ class Session extends Model
     public function movies(): BelongsToMany
     {
         return $this->belongsToMany(Movie::class);
+    }
+
+    public function latestSchedule(): HasOne
+    {
+        return $this->hasOne(Schedule::class)->OfMany('day', 'max');
     }
 }

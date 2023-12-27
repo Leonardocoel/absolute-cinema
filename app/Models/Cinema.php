@@ -46,6 +46,6 @@ class Cinema extends Model
 
     public function latestSession(): HasOne
     {
-        return $this->hasOne(Session::class)->latestOfMany();
+        return $this->hasOne(Session::class)->OfMany('start_date', 'max');
     }
 }

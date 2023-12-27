@@ -23,9 +23,6 @@ class User extends Authenticatable
     use Notifiable;
     use SoftDeletes;
 
-
-    protected $with = ['roles', 'userAccount'];
-
     /**
      * The attributes that are mass assignable.
      *
