@@ -32,7 +32,7 @@ const props = defineProps({
             <tbody>
                 <tr
                     v-for="(item, row_index) in data"
-                    :key="row_index"
+                    :key="item.id"
                     @click="click(item.id)"
                     class="bg-gray-100 border-b hover:bg-gray-200 cursor-pointer"
                 >

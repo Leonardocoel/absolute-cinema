@@ -2,15 +2,10 @@
 import { Head, Link, router } from "@inertiajs/vue3";
 import BaseTable from "@/Components/BaseTable.vue";
 import { ref } from "vue";
-import UserForm from "@/Components/User/UserForm.vue";
 
 const { users } = defineProps({
     users: {
-        type: Array,
-        required: true,
-    },
-    cinemasWithoutAdmin: {
-        type: Array,
+        type: Object,
         required: true,
     },
 });
@@ -21,32 +16,29 @@ const filter = ref({
     email: "",
     cpf: "",
     role: "",
-    result: users,
+    result: users.data,
 });
 
 const rolesMap = ref({
     root_admin: "Administrador Raiz",
-    cinema_admin: "Administrador Cinema",
+    admin: "Administrador Cinema",
     end_user: "Usuário",
 });
 
 const UsersFilter = () => {
-    const { name, email: filterEmail, cpf, role } = filter.value;
+    const { name, email, cpf, role } = filter.value;
 
-    filter.value.result = users.filter(({ user_account, email, roles }) => {
-        const { role_name } = roles[0] || { role_name: "" };
-        const roleMatch = role_name === role || role === "";
+    filter.value.result = users.data.filter((user) => {
+        const roleMatch = user.role === role || "" === role;
 
-        let numericCPF = user_account.cpf.replace(/\D/g, "");
+        let numericCPF = user.cpf.replace(/\D/g, "");
         const cpfMatch = numericCPF.includes(cpf);
 
-        const nameMatch = user_account.name
-            .toLowerCase()
-            .includes(name.toLowerCase());
+        const nameMatch = user.name.toLowerCase().includes(name.toLowerCase());
 
-        const emailMatch = email
+        const emailMatch = user.email
             .toLowerCase()
-            .includes(filterEmail.toLocaleLowerCase());
+            .includes(email.toLocaleLowerCase());
 
         return roleMatch && cpfMatch && nameMatch && emailMatch;
     });
@@ -57,8 +49,6 @@ const handleClick = (id) => router.visit(`/admin/usuarios/${id}`);
 
 <template>
     <Head title="Usuários" />
-
-    <UserForm :users="users" :cinemasWithoutAdmin="cinemasWithoutAdmin" />
 
     <section>
         <section class="mt-16">
@@ -187,17 +177,26 @@ const handleClick = (id) => router.visit(`/admin/usuarios/${id}`);
                 scope="row"
                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
             >
-                {{ item.user_account.name }}
+                {{ item.name }}
             </th>
             <td scope="row" class="px-6 py-4">
                 {{ item.email }}
             </td>
             <td scope="row" class="px-6 py-4">
-                {{ item.user_account.cpf }}
+                {{ item.cpf }}
             </td>
             <td scope="row" class="px-6 py-4">
-                {{ rolesMap[item.roles[0]?.role_name] || "-" }}
+                {{ rolesMap[item.role] }}
             </td>
         </BaseTable>
+        <div class="text-center my-4">
+            <Link :href="users.links.prev" class="p-2 mr-2 border">{{
+                "<<"
+            }}</Link>
+            <Link :href="users.links.next" class="p-2 border">{{ ">>" }}</Link>
+        </div>
+        <div v-if="$page.props.flash.message" class="alert text-end mr-8">
+            {{ $page.props.flash.message }}
+        </div>
     </section>
 </template>

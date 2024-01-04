@@ -4,7 +4,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { computed } from "vue";
 
 const { users } = defineProps({
-    users: {
+    cinemas: {
         type: Array,
         required: true,
     },
@@ -12,9 +12,12 @@ const { users } = defineProps({
         type: Array,
         required: true,
     },
+    errors: {
+        type: Object,
+    },
 });
 
-const roles = { none: 0, admin: 2, user: 3 };
+const roles = { none: "", admin: "admin", user: "end_user" };
 
 const form = useForm({
     show: true,
@@ -22,38 +25,29 @@ const form = useForm({
     name: "",
     password: "",
     cpf: "",
-    role_id: roles.none,
-    cinema_id: 0,
+    role: roles.none,
+    cinemaId: 0,
 });
 
-const formsIsInvalid = computed(() => {
+const formIsInvalid = computed(() => {
     const { show, ...fields } = form.data();
 
-    if (fields.role_id === roles.user) form.cinema_id = 0;
+    if (fields.role === roles.user) form.cinemaId = 0;
 
     for (const field of Object.values(fields)) {
         if (field === "") return true;
     }
 
-    if (fields.role_id === roles.none) return true;
-    if (fields.role_id === roles.admin && fields.cinema_id === 0) return true;
+    if (fields.role === roles.none) return true;
+    if (fields.role === roles.admin && fields.cinemaId === 0) return true;
 
     if (form.password.length < 8)
         return {
-            field: "password",
-            message: "Esta senha é muito curta",
+            password: "Esta senha é muito curta",
         };
 
     const regex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-    if (!regex.test(form.cpf)) return { field: "cpf", message: "Cpf invalido" };
-
-    for (const { email, user_account, roles } of users) {
-        if (email === form.email)
-            return { field: "email", message: "Email já existe" };
-
-        if (user_account.cpf === form.cpf)
-            return { field: "cpf", message: "Cpf já existe" };
-    }
+    if (!regex.test(form.cpf)) return { cpf: "Cpf invalido" };
 
     return false;
 });
@@ -61,7 +55,7 @@ const formsIsInvalid = computed(() => {
 const submit = () => {
     return form
         .transform((data) => {
-            if (data.cinema_id === roles.none) delete data.cinema_id;
+            if (data.cinemaId === roles.none) delete data.cinemaId;
 
             return data;
         })
@@ -142,6 +136,9 @@ const formatCPF = () => {
                             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                             >Email</label
                         >
+                        <span v-if="errors.email || formIsInvalid.email">{{
+                            errors.email || formIsInvalid.email
+                        }}</span>
                     </div>
 
                     <div class="mt-4 sm:mt-0 relative z-0 w-full group">
@@ -159,6 +156,12 @@ const formatCPF = () => {
                             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                             >Password</label
                         >
+                        <span
+                            v-if="errors.password || formIsInvalid.password"
+                            >{{
+                                errors.password || formIsInvalid.password
+                            }}</span
+                        >
                     </div>
 
                     <div class="mt-4 sm:mt-0 relative z-0 w-full group">
@@ -175,6 +178,9 @@ const formatCPF = () => {
                             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-2 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                             >Nome</label
                         >
+                        <span v-if="errors.name || formIsInvalid.name">{{
+                            errors.name || formIsInvalid.name
+                        }}</span>
                     </div>
 
                     <div class="mt-4 sm:mt-0 relative z-0 w-full group">
@@ -194,6 +200,9 @@ const formatCPF = () => {
                             class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                             >CPF</label
                         >
+                        <span v-if="errors.cpf || formIsInvalid.cpf">{{
+                            errors.cpf || formIsInvalid.cpf
+                        }}</span>
                     </div>
                     <div class="mt-8 sm:mt-4 relative z-0 w-full group">
                         <label
@@ -202,7 +211,7 @@ const formatCPF = () => {
                             >Função</label
                         >
                         <select
-                            v-model="form.role_id"
+                            v-model="form.role"
                             id="role_id"
                             class="cursor-pointer"
                         >
@@ -222,6 +231,9 @@ const formatCPF = () => {
                             </option>
                             <option :value="roles.user">Usuário</option>
                         </select>
+                        <span v-if="errors.role || formIsInvalid.role">{{
+                            errors.role || formIsInvalid.role
+                        }}</span>
                     </div>
                     <div class="mt-8 sm:mt-4 relative z-0 w-full group">
                         <label
@@ -230,12 +242,12 @@ const formatCPF = () => {
                             >Cinema</label
                         >
                         <select
-                            v-model="form.cinema_id"
+                            v-model="form.cinemaId"
                             id="cinema_id"
                             class="disabled:opacity-25 enabled:cursor-pointer"
                             :disabled="
                                 cinemasWithoutAdmin.length < 1 ||
-                                form.role_id !== roles.admin
+                                form.role !== roles.admin
                             "
                         >
                             <option :value="roles.none" disabled>
@@ -249,16 +261,20 @@ const formatCPF = () => {
                                 {{ cinema.name }}
                             </option>
                         </select>
+                        <span
+                            v-if="errors.cinemaId || formIsInvalid.cinemaId"
+                            class="text-red-400 ml-2"
+                            >{{
+                                errors.cinemaId || formIsInvalid.cinemaId
+                            }}</span
+                        >
                     </div>
                 </div>
-                <div class="mt-4 justify-between flex">
-                    <p class="text-red-500 px-4 py-2" role="alert">
-                        {{ formsIsInvalid.message }}
-                    </p>
+                <div class="mt-4 text-end">
                     <SecondaryButton
                         class="mr-4"
                         :type="'submit'"
-                        :disabled="formsIsInvalid || form.processing"
+                        :disabled="formIsInvalid || form.processing"
                         >Salvar</SecondaryButton
                     >
                 </div>

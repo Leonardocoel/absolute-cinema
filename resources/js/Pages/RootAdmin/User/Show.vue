@@ -13,14 +13,14 @@ const { user } = defineProps({
 const roles = { none: 0, admin: 2, user: 3 };
 
 const rolesMap = ref({
-    cinema_admin: "Administrador Cinema",
+    admin: "Administrador do Cinema",
     end_user: "Usuário",
 });
 
 const form = useForm({
-    email: user.email,
-    name: user.user_account.name,
-    cpf: user.user_account.cpf,
+    email: user.data.email,
+    name: user.data.name,
+    cpf: user.data.cpf,
 });
 
 const formsIsInvalid = computed(() => {
@@ -37,20 +37,20 @@ const formsIsInvalid = computed(() => {
 });
 
 const submit = () => {
-    return form.put(`/admin/usuarios/${user.id}`);
+    return form.put(`/admin/usuarios/${user.data.id}`);
 };
 
-const handleDelete = () => router.delete(`/admin/usuarios/${user.id}`);
+const handleDelete = () => router.delete(`/admin/usuarios/${user.data.id}`);
 
-const formatCPF = () => {
-    const cpfRegex = /(\d{3})(\d{3})(\d{3})(\d{2})/;
-    const layout = "$1.$2.$3-$4";
+// const formatCPF = () => {
+//     const cpfRegex = /(\d{3})(\d{3})(\d{3})(\d{2})/;
+//     const layout = "$1.$2.$3-$4";
 
-    let numericCPF = form.cpf.replace(/\D/g, "");
+//     let numericCPF = form.cpf.replace(/\D/g, "");
 
-    if (numericCPF.length === 11)
-        form.cpf = numericCPF.replace(cpfRegex, layout);
-};
+//     if (numericCPF.length === 11)
+//         form.cpf = numericCPF.replace(cpfRegex, layout);
+// };
 
 const getCinemaName = (role) => {
     if (role.role_name === "root_admin") return;
@@ -144,13 +144,13 @@ const getCinemaName = (role) => {
         <div class="m-8">
             <h3 class="">Associações</h3>
             <div
-                v-for="role in user.roles"
+                v-for="cinema in user.data.cinemas"
                 class="p-4 mb-1 border rounded-lg flex gap-x-6"
             >
                 <p>
-                    {{ getCinemaName(role) }}
+                    {{ cinema.name }}
                 </p>
-                <p>{{ rolesMap[role.role_name] }}</p>
+                <p>{{ rolesMap[user.data.role] }}</p>
 
                 <p class="ml-auto">X</p>
             </div>
