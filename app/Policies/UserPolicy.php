@@ -10,7 +10,7 @@ class UserPolicy
     public function before(User $user, string $ability): bool|null
     {
 
-        if ($user->roles[0]->role_name === 'root_admin') {
+        if ($user->role === 'root_admin') {
             return true;
         }
 
@@ -23,7 +23,7 @@ class UserPolicy
     public function viewAny(User $user): bool
     {
 
-        if ($user->roles[0]->role_name === 'cinema_admin') return true;
+        if ($user === 'cinema_admin') return true;
 
         return false;
     }
@@ -34,7 +34,7 @@ class UserPolicy
     public function view(User $user, User $model): bool
     {
 
-        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $isAdmin = $user === 'cinema_admin';
         $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
 
         if ($isAdmin &&  $hasValidCinema) return true;
@@ -56,7 +56,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $isAdmin = $user === 'cinema_admin';
         $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
 
         if ($isAdmin &&  $hasValidCinema) return true;
@@ -70,7 +70,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        $isAdmin = $user->roles[0]->role_name === 'cinema_admin';
+        $isAdmin = $user === 'cinema_admin';
         $hasValidCinema =  $model->cinemas->contains($user->roles[0]->pivot->cinema_id);
 
         if ($isAdmin &&  $hasValidCinema) return true;

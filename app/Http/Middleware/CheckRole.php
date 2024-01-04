@@ -15,10 +15,9 @@ class CheckRole
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
+        $userRole = auth()->user()->role;
 
-        $role_name = auth()->user()->roles[0]->role_name;
-
-        if ($role_name === $role) return $next($request);
+        if ($userRole === $role) return $next($request);
 
         return  abort(403, 'Unauthorized action.');
     }
