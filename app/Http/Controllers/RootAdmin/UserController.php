@@ -2,105 +2,82 @@
 
 namespace App\Http\Controllers\RootAdmin;
 
-use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
-use App\Models\Cinema;
+use Inertia\Response;
 use Illuminate\Support\Facades\DB;
+use App\DataTransferObjects\UserDTO;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUserRequest;
+use App\Services\User\UserService;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Redirect;
+use App\Services\Cinema\CinemaService;
+use App\Http\Resources\RootAdmin\UserResource;
+use App\Http\Resources\RootAdmin\CinemaResource;
 
 class UserController extends Controller
 {
 
-    public function __construct()
-    {
+    public function __construct(
+        protected UserService $userService,
+        protected CinemaService $cinemaService
+    ) {
         $this->authorizeResource(User::class, 'usuario');
     }
 
 
-    public function index()
+    public function index(): Response
     {
-
-        $users = User::all()->load(['userAccount', 'roles']);
-
-        $cinemasWithoutAdmin = Cinema::whereDoesntHave('users', fn ($q) => $q->where('role_id', 2))->get(['name', 'id']);
-
-
         return Inertia::render('RootAdmin/User/Index', [
-            'users' => $users,
-            'cinemasWithoutAdmin' => $cinemasWithoutAdmin,
+            'users' => UserResource::collection($this->userService->index()),
         ]);
     }
 
-
-    public function store(StoreUserRequest $request)
+    public function create(): Response
     {
-
-
-        try {
-            DB::beginTransaction();
-
-            $user = User::create($request->only(['email', 'password']));
-
-            $user->userAccount()->create($request->only(['name', 'cpf']));
-
-            $cinemaAdmin = Role::where('role_name', 'cinema_admin')->first();
-
-            if ($request->role_id === $cinemaAdmin->id) {
-
-                $cinemaId =  $request->cinema_id;
-                $hasAdmin = Cinema::where('id', $cinemaId)->whereHas('users', fn ($q) => $q->where('role_id', 2))->exists();
-
-                if ($hasAdmin) {
-                    return back()->withErrors(['create' => 'Cinema already has an admin']);
-                }
-
-                $user->roles()->attach($request->role_id, ['cinema_id' =>  $cinemaId]);
-            }
-            DB::commit();
-            return Redirect::back()->with('success', 'User created.');
-        } catch (\Exception $e) {
-            dump('ERRO');
-            DB::rollBack();
-        }
+        return Inertia::render(
+            'RootAdmin/User/Create',
+            [
+                'cinemasWithoutAdmin' => CinemaResource::collection($this->cinemaService->index(noAdmin: true))
+            ]
+        );
     }
 
-
-
-    public function show(User $usuario)
+    public function store(StoreUserRequest $request): RedirectResponse
     {
-        $usuario->load(['userAccount', 'roles', 'cinemas']);
+        $data = $request->safe()->except(['cinemaId']);
 
+        $this->userService->store(
+            new UserDTO(...$data, id: null),
+            $request->validated('cinemaId')
+        );
+
+        return Redirect::route('admin.usuarios.index')->with('message', 'Usuário criado.');
+    }
+
+    public function show(User $usuario): Response
+    {
         return Inertia::render('RootAdmin/User/Show', [
-            'user' => $usuario
+            'user' => new UserResource($usuario->load('cinemas'))
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $usuario)
+    public function update(UpdateUserRequest $request, User $usuario): void
     {
-        try {
-            DB::beginTransaction();
-
-
-            $usuario->update(['email' => $request->email]);
-            $usuario->userAccount->update(["name" => $request->name, "cpf" => $request->cpf]);
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            dd($e);
-        }
+        $data = $request->validated();
+        $this->userService->update(
+            new UserDTO(...$data, id: null, email: null, password: null, role: null),
+            $usuario
+        );
     }
 
-
-    public function destroy(User $usuario)
+    public function destroy(User $usuario): RedirectResponse
     {
-        $usuario->delete();
 
-        return to_route('usuarios.index');
+        $this->userService->destroy($usuario);
+
+        return Redirect::route('admin.usuarios.index')->with('message', "Usuário deletado");
     }
 }

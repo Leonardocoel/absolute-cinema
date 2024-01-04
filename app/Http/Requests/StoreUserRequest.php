@@ -28,9 +28,9 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'unique:users'],
             'password' => ['required', 'string'],
             'name' => ['required', 'string'],
-            'cpf' => ['required', 'string',  'size:14', 'unique:user_accounts'],
-            'role_id' => ['required', 'integer', 'exists:roles,id'],
-            'cinema_id' => ['sometimes', 'required', 'integer', 'exists:cinemas,id']
+            'cpf' => ['required', 'string',  'size:14', 'unique:users'],
+            'role' => ['required', 'string', Rule::in(['admin', 'end_user'])],
+            'cinemaId' => ['sometimes', 'required', 'integer', 'exists:cinemas,id']
         ];
     }
 }

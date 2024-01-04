@@ -53,8 +53,9 @@ class DatabaseSeeder extends Seeder
         }
 
         $cinemas = Cinema::factory(2)
-            ->hasAttached(User::factory()->create(['role' => 'admin']))
-            ->hasAttached(User::factory(5)->create(['role' => 'end_user']))
+            ->hasAttached(User::factory()->state(['role' => 'admin']))
+            ->hasAttached(User::factory(5)->state(['role' => 'end_user']))
+            ->hasAttached($users)
             ->has(Ticket::factory(3))
             ->has(Room::factory()->state(['capacity' => 100])->has(Seat::factory(100)))
             ->has(Room::factory()->state(['capacity' => 200])->has(Seat::factory(200)))

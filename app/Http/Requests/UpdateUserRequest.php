@@ -29,8 +29,8 @@ class UpdateUserRequest extends FormRequest
         $user = $this->route('usuario');
 
         return [
-            'name' => ['required', 'string', Rule::unique('user_accounts')->ignore($user)],
-            'cpf' => ['required', 'string',  'size:14',  Rule::unique('user_accounts')->ignore($user)],
+            'name' => ['required', 'string', Rule::unique('users')->ignore($user)],
+            'cpf' => ['required', 'string',  'size:14',  Rule::unique('users')->ignore($user)],
         ];
     }
 }
